@@ -6,6 +6,34 @@ const APIError = require("../middlewares/api-error");
 class AuthService {
   constructor() {}
 
+  async registerService(data) {
+    // find and check if this user already exists
+    const user = await db.User.findOne({
+      where: {
+        username: data.username,
+      },
+    });
+
+    if (user) {
+      return Promise.reject(new APIError(400, "User already exist!"));
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(data.password, salt);
+
+    // create new user
+    const newUser = await db.User.create({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      username: data.username,
+      password: hashed,
+      group_id: data.group_id,
+    });
+
+    return newUser;
+  }
+
   async loginService(data) {
     const user = await db.User.findOne({
       where: {
@@ -31,6 +59,8 @@ class AuthService {
 
     return jwtToken;
   }
+
+  
 }
 
 module.exports = new AuthService();

@@ -9,16 +9,14 @@ const isAuthentication = (req, res, next) => {
       access_token,
       process.env.SECRET_JWT
     ).dataValues;
-    console.log("check auth");
     req.userId = decodeJwt.id; //gán id cho req sau
     next();
   } catch (e) {
     if (e instanceof jwt.TokenExpiredError) {
-      console.log("token het han");
-      return res.status(401).send("Token expired");
+      return res.status(401).send("Expired tokens.");
     }
 
-    return res.status(401).send("Authentication not valid");
+    return res.status(401).send("Invalid authentication!");
   }
 };
 
@@ -27,16 +25,12 @@ const isAdmin = async (req, res, next) => {
     const userId = req.userId;
     const user = await db.User.findByPk(userId);
     if (+user?.group_id == 1) {
-      console.log("check admin");
       next();
     } else {
-      console.log("token khong phai admin");
-
-      return res.status(401).send("Authentication not admin ne");
+      return res.status(401).send("Non-admin authentication!");
     }
   } catch (e) {
-    console.log("loi check admin");
-    return res.status(401).send("Authentication not valid");
+    return res.status(401).send("Invalid authentication!");
   }
 };
 

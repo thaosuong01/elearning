@@ -1,19 +1,26 @@
 const db = require("../models");
+const APIError = require("../middlewares/api-error");
 
 class GroupService {
-  async createGroup(req, res) {
-    const name = await db.Group.create({
+  constructor() {}
+
+  async createService(data) {
+    const nameGroup = await db.Group.findOne({
       where: {
-        name: req.body.name,
+        name: data.name,
       },
     });
 
-    if (name) {
-      return res.status(400).json("Name group is exist.");
+    if (nameGroup) {
+      return Promise.reject(new APIError(400, "User groups already exist!"));
     }
 
-    return name;
+    const group = await db.Group.create({
+      name: data.name,
+    });
+
+    return group;
   }
 }
 
-module.exports = GroupService;
+module.exports = new GroupService();
