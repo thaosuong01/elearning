@@ -60,7 +60,41 @@ class AuthService {
     return jwtToken;
   }
 
-  
+  async getAllUserService() {
+    const users = await db.User.findAll({
+      raw: true,
+    });
+
+    return users;
+  }
+
+  async deleteUserService(data) {
+    const response = await db.User.destroy({
+      where: {
+        id: data.id,
+      },
+    });
+
+    if (!response)
+      return Promise.reject(new APIError(404, "User do not exist"));
+
+    return response;
+  }
+
+  async updateUserService(id, data) {
+    try {
+      if (data.username) {
+        delete data.username;
+      }
+      const user = await db.User.update(data, {
+        where: { id: id },
+      });
+
+      return user;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 module.exports = new AuthService();

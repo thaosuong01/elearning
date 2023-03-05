@@ -10,6 +10,7 @@ const isAuthentication = (req, res, next) => {
       process.env.SECRET_JWT
     ).dataValues;
     req.userId = decodeJwt.id; //gán id cho req sau
+    console.log(decodeJwt);
     next();
   } catch (e) {
     if (e instanceof jwt.TokenExpiredError) {
