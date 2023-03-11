@@ -8,6 +8,7 @@ const authRouter = require("./routes/auth.route");
 const groupRouter = require("./routes/group.route");
 const categoryRouter = require("./routes/category.route");
 const courseRouter = require("./routes/course.route");
+const topicRouter = require("./routes/topic.route");
 
 var cors = require("cors");
 const APIError = require("./middlewares/api-error");
@@ -30,6 +31,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/group", groupRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/course", courseRouter);
+app.use("/api/topic", topicRouter);
 
 app.use((req, res, next) => {
   return next(new APIError(404, "Not found!"));
